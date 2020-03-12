@@ -15,10 +15,22 @@ class App extends Component {
     filter: ""
   };
 
-  submitContact = data => {
-    this.setState(prevState => ({
+  componentDidMount(){
+    const contacts = (JSON.parse(localStorage.getItem('contacts') !== null)) ? (JSON.parse(localStorage.getItem('contacts'))):[];
+    this.setState({contacts})
+  }
+  componentDidUpdate(){
+    localStorage.setItem('contacts', JSON.stringify(this.state.contacts))
+  }
+
+  submitContact = (data) => {
+
+    const isNameExist= this.state.contacts.some(contact=>contact.name===data.name)
+   ! isNameExist
+    ? this.setState(prevState => ({
       contacts: [...prevState.contacts, data]
-    }));
+    }))
+    : alert("Write correct name")
   };
 
   deleteContact = e => {
@@ -28,7 +40,7 @@ class App extends Component {
     }));
   };
 
-  nameFilter = e => {
+  nameFilter = (e) => {
     this.setState({
       filter: e.target.value
     });
@@ -45,16 +57,15 @@ class App extends Component {
       <div>
         <h1 className={s.h1}>Phonebook</h1>
         <ContactForm submitContact={this.submitContact} />
-
         <h2 className={s.h2}>Contacts</h2>
-        <Filter nameFilter={this.nameFilter} />
+        <Filter nameFilter={this.nameFilter}/>
         <ContactList
           contacts={this.getFilteredContacts()}
           deleteContact={this.deleteContact}
         />
       </div>
-    );
-  }
-}
+    )
 
+    }
+}
 export default App;
